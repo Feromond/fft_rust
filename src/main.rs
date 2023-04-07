@@ -2,21 +2,21 @@ use plotters::prelude::*;
 use rustfft::FftPlanner;
 use num_complex::Complex;
 use std::f64::consts::PI;
+use rustfft::num_traits::Zero;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let curve_points: usize = 5000;
-    let sampling_rate: f64 = 0.05;
-    let frequency: f64 = 1.0 / sampling_rate;
+    let curve_points: usize = 1000;
+    let sampling_rate: f64 = 0.001;
     let frequency1: f64 = 50.0;
     let frequency2: f64 = 80.0;
 
 
     let x_values: Vec<f64> = (0..curve_points)
-        .map(|i| i as f64 * (1.0 / sampling_rate))
+        .map(|i| i as f64 * sampling_rate)
         .collect();
     let y_values: Vec<f64> = x_values
         .iter()
-        .map(|&x| ((2.0 * PI * 1.0/frequency1 * x).sin() + (2.0 * PI * 1.0/frequency2 * x).sin()))
+        .map(|&x| ((2.0 * PI * frequency1 * x).sin() + (2.0 * PI * frequency2 * x).sin()))
         .collect();
 
     let root_area = BitMapBackend::new("simple_curve.png", (640, 480)).into_drawing_area();
@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .margin(10)
         .x_label_area_size(30)
         .y_label_area_size(30)
-        .build_cartesian_2d(0f64..(1.0 / frequency * 2.0), -4.2f64..4.2f64)?;
+        .build_cartesian_2d(0f64..(sampling_rate * curve_points as f64), -4.2f64..4.2f64)?;
 
     chart.configure_mesh().draw()?;
 
@@ -35,21 +35,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         &RED,
     ))?;
 
-    let mut planner = FftPlanner::new();
+    let mut planner: FftPlanner<f64> = FftPlanner::new();
     let fft = planner.plan_fft_forward(curve_points);
 
     let mut signal: Vec<Complex<f64>> = y_values.iter().map(|&y| Complex::new(y, 0.0)).collect();
-    let mut scratch = vec![Complex::default(); fft.get_inplace_scratch_len()];
+    let mut scratch: Vec<Complex<f64>> = vec![Complex::default(); fft.get_inplace_scratch_len()];
     fft.process_with_scratch(&mut signal, &mut scratch);
-    let spectrum = signal;
+    let spectrum: Vec<Complex<f64>> = signal;
     
-    let frequencies: Vec<f64> = (0..curve_points / 2)
-        .map(|i| (i as f64) * (sampling_rate / curve_points as f64))
+    let spectrum_shifted: Vec<Complex<f64>> = fft_shift(&spectrum);
+
+    let frequencies: Vec<f64> = (-(curve_points as i64) / 2..curve_points as i64 / 2)
+        .map(|i| (i as f64) * (sampling_rate * curve_points as f64))
         .collect();
-    let magnitudes: Vec<f64> = spectrum[0..(curve_points / 2)]
-        .iter()
-        .map(|c| (c.norm() * 2.0) / curve_points as f64)
-        .collect();
+    
+    let magnitudes: Vec<f64> = spectrum_shifted.iter()
+    .map(|c| (c.norm() * 2.0) / curve_points as f64)
+    .collect();
 
     let root_area = BitMapBackend::new("fft_plot.png", (640, 480)).into_drawing_area();
     root_area.fill(&WHITE)?;
@@ -58,7 +60,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .margin(10)
         .x_label_area_size(30)
         .y_label_area_size(30)
-        .build_cartesian_2d(0f64..(sampling_rate / 2.0), 0f64..1.2f64)?;
+        .build_cartesian_2d((-(curve_points as f64) / 2.0) / (sampling_rate * curve_points as f64)..((curve_points as f64) / 2.0) / (sampling_rate * curve_points as f64), 0f64..1.2f64)?;
 
     chart.configure_mesh().draw()?;
 
@@ -73,3 +75,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
     }
     
+
+
+fn fft_shift<T: Clone + Zero>(data: &[T]) -> Vec<T> {
+    let n = data.len();
+    let mut shifted_data: Vec<T> = vec![T::zero(); n];
+
+    let (left, right) = data.split_at(n / 2);
+    shifted_data[..n / 2].clone_from_slice(right);
+    shifted_data[n / 2..].clone_from_slice(left);
+
+    return shifted_data;
+}
