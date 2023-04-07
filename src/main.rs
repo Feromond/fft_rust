@@ -5,6 +5,7 @@ use std::f64::consts::PI;
 use rustfft::num_traits::Zero;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    // Defining current static controls
     let curve_points: usize = 1000;
     let sampling_rate: f64 = 0.001;
     let frequency1: f64 = 50.0;
@@ -19,17 +20,37 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .map(|&x| ((2.0 * PI * frequency1 * x).sin() + (2.0 * PI * frequency2 * x).sin()))
         .collect();
 
+    let mut min_value_y: f64 = y_values
+        .iter()
+        .cloned()
+        .min_by(|a, b| a.partial_cmp(b).unwrap())
+        .unwrap();
+    let mut max_value_y: f64 = y_values
+        .iter()
+        .cloned()
+        .max_by(|a, b| a.partial_cmp(b).unwrap())
+        .unwrap();
+
+
+    // Changing the plot y limits to include 10% more values from the minimum / maximum values in the array
+    let min_y_10_percent: f64 = 0.1 * min_value_y;
+    min_value_y += min_y_10_percent;
+
+    let max_y_10_percent: f64 = 0.1 * max_value_y;
+    max_value_y += max_y_10_percent;
+
+
     let root_area = BitMapBackend::new("simple_curve.png", (640, 480)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
-        .caption("Simple Curve", ("Arial", 24).into_font())
+        .caption("Time Domain Signal", ("Arial", 24).into_font())
         .margin(10)
         .x_label_area_size(30)
         .y_label_area_size(30)
-        .build_cartesian_2d(0f64..(sampling_rate * curve_points as f64), -4.2f64..4.2f64)?;
+        .build_cartesian_2d(0f64..(sampling_rate * curve_points as f64), min_value_y..max_value_y)?;
 
     chart.configure_mesh().draw()?;
-
+    
     chart.draw_series(LineSeries::new(
         x_values.iter().zip(y_values.iter()).map(|(&x, &y)| (x, y)),
         &RED,
@@ -56,7 +77,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let root_area = BitMapBackend::new("fft_plot.png", (640, 480)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
-        .caption("FFT of Simple Curve", ("Arial", 24).into_font())
+        .caption("Amplitude Spectrum of Signal (FFT)", ("Arial", 24).into_font())
         .margin(10)
         .x_label_area_size(30)
         .y_label_area_size(30)
