@@ -8,7 +8,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Defining current static controls
     let curve_points: usize = 1000;
     let sampling_rate: f64 = 0.001;
-    let frequency1: f64 = 50.0;
+    let frequency1: f64 = 20.0;
     let frequency2: f64 = 80.0;
 
 
@@ -66,7 +66,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     
     let spectrum_shifted: Vec<Complex<f64>> = fft_shift(&spectrum);
 
-    let frequencies: Vec<f64> = (-(curve_points as i64) / 2..curve_points as i64 / 2)
+    let frequencies: Vec<f64> = (-(curve_points as i64) / 2..(curve_points as i64) / 2)
         .map(|i| (i as f64) * (sampling_rate * curve_points as f64))
         .collect();
     
