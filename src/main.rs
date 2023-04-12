@@ -6,10 +6,10 @@ use rustfft::num_traits::Zero;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     // Defining current static controls
-    let curve_points: usize = 1000;
-    let sampling_rate: f64 = 0.001;
-    let frequency1: f64 = 20.0;
-    let frequency2: f64 = 80.0;
+    let curve_points: usize = 300;
+    let sampling_rate: f64 = 0.003;
+    let frequency1: f64 = 60.0;
+    let frequency2: f64 = 100.0;
 
 
     let x_values: Vec<f64> = (0..curve_points)
@@ -62,12 +62,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut signal: Vec<Complex<f64>> = y_values.iter().map(|&y| Complex::new(y, 0.0)).collect();
     let mut scratch: Vec<Complex<f64>> = vec![Complex::default(); fft.get_inplace_scratch_len()];
     fft.process_with_scratch(&mut signal, &mut scratch);
-    let spectrum: Vec<Complex<f64>> = signal;
+    let mut spectrum: Vec<Complex<f64>> = signal;
     
-    let spectrum_shifted: Vec<Complex<f64>> = fft_shift(&spectrum);
+    let spectrum_shifted: Vec<Complex<f64>> = fft_shift(&mut spectrum);
 
     let frequencies: Vec<f64> = (-(curve_points as i64) / 2..(curve_points as i64) / 2)
-        .map(|i| (i as f64) * (sampling_rate * curve_points as f64))
+        .map(|i| (i as f64) / (sampling_rate * curve_points as f64))
         .collect();
     
     let magnitudes: Vec<f64> = spectrum_shifted.iter()
@@ -83,7 +83,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .y_label_area_size(30)
         .build_cartesian_2d((-(curve_points as f64) / 2.0) / (sampling_rate * curve_points as f64)..((curve_points as f64) / 2.0) / (sampling_rate * curve_points as f64), 0f64..1.2f64)?;
 
-    chart.configure_mesh().draw()?;
+    chart.configure_mesh().draw()?; 
 
     chart.draw_series(LineSeries::new(
         frequencies.iter().zip(magnitudes.iter()).map(|(&x, &y)| (x, y)),
