@@ -36,6 +36,15 @@ This project aims to create a dynamic fast fourier transform tool which can plot
 
 - Future implementation will begin to add forms of user input or potential implement basic file reading to process more interesting data.
 
+#### Pre-release v2:
+
+- Updated project to dynamically update plot windows and axis based on input data.
+- Changed the signal from a simple pre-configured sinusoid to instead be read in from a file containing some complex raw signal.
+- Adjusted all static parameters to dynamically compute based on the input raw signal file.
+
+- Future implementations will start to work with the users inputs and will also handle more filetypes better.
+- Theoretical future implementation will be to work on handling errors and exceptions better, as well as overall code optimization and redundancy reduction.
+
 
 ### References
 
