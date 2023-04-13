@@ -33,24 +33,25 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         data_y.push(columns[0].replace(" ", "").parse().unwrap());
     }
 
-    println!("Data X: {:?}", data_x);
-
-
 
     // Defining current static controls
-    let curve_points: usize = 300;
-    let sampling_rate: f64 = 0.003;
-    let frequency1: f64 = 60.0;
-    let frequency2: f64 = 100.0;
+    let curve_points: usize = data_x.len();
+    let sampling_rate: f64 = data_x[1] - data_x[0];
+
+    // let frequency1: f64 = 60.0;
+    // let frequency2: f64 = 100.0;
 
 
-    let x_values: Vec<f64> = (0..curve_points)
-        .map(|i| i as f64 * sampling_rate)
-        .collect();
-    let y_values: Vec<f64> = x_values
-        .iter()
-        .map(|&x| ((2.0 * PI * frequency1 * x).sin() + (2.0 * PI * frequency2 * x).sin()))
-        .collect();
+    // let x_values: Vec<f64> = (0..curve_points)
+    //     .map(|i| i as f64 * sampling_rate)
+    //     .collect();
+    // let y_values: Vec<f64> = x_values
+    //     .iter()
+    //     .map(|&x| ((2.0 * PI * frequency1 * x).sin() + (2.0 * PI * frequency2 * x).sin()))
+    //     .collect();
+
+    let x_values:Vec<f64> = data_x;
+    let y_values:Vec<f64> = data_y;
 
     let mut min_value_y: f64 = y_values
         .iter()
@@ -106,6 +107,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .map(|c| (c.norm() * 2.0) / curve_points as f64)
     .collect();
 
+    // Setting top range for plot window scaling to be max value + 10%
+    let mut max_mag_y: f64 = magnitudes
+        .iter()
+        .cloned()
+        .max_by(|a, b| a.partial_cmp(b).unwrap())
+        .unwrap();
+    let max_mag_y_10_percent: f64 = 0.1 * max_mag_y;
+    max_mag_y += max_mag_y_10_percent;
+
     let root_area = BitMapBackend::new("amplitude_spectrum.png", (640, 480)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
@@ -113,7 +123,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .margin(10)
         .x_label_area_size(30)
         .y_label_area_size(30)
-        .build_cartesian_2d((-(curve_points as f64) / 2.0) / (sampling_rate * curve_points as f64)..((curve_points as f64) / 2.0) / (sampling_rate * curve_points as f64), 0f64..1.2f64)?;
+        .build_cartesian_2d((-(curve_points as f64) / 2.0) / (sampling_rate * curve_points as f64)..((curve_points as f64) / 2.0) / (sampling_rate * curve_points as f64), 0f64..max_mag_y)?;
 
     chart.configure_mesh().draw()?; 
 
@@ -123,7 +133,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     ))?;
     
     root_area.present()?;
-    println!("simple_curve.png and fft_plot.png created.");
+    println!("raw_signal.png and amplitude_spectrum.png created.");
     
     Ok(())
     }
