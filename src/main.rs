@@ -3,8 +3,40 @@ use rustfft::FftPlanner;
 use num_complex::Complex;
 use std::f64::consts::PI;
 use rustfft::num_traits::Zero;
-
+use std::fs::File;
+use std::io::{BufReader, BufRead};
+use csv::ReaderBuilder;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+
+
+    let mut data = Vec::new();
+    if let Ok(file) = File::open("sample_data.txt") {
+        let reader = BufReader::new(file);
+        
+
+        for line in reader.lines() {
+            if let Ok(line) = line {
+                let columns: Vec<&str> = line.split(',').collect();
+
+                if columns.len() >= 2 {
+                    data.push(line.to_string());
+                }
+            }
+        }
+    }
+
+    let mut data_x:Vec<f64> = Vec::new();
+    let mut data_y:Vec<f64> = Vec::new();
+    for line in &data{
+        let columns: Vec<&str> = line.trim().split(',').collect();
+        data_x.push(columns[1].replace(" ", "").parse().unwrap());
+        data_y.push(columns[0].replace(" ", "").parse().unwrap());
+    }
+
+    println!("Data X: {:?}", data_x);
+
+
+
     // Defining current static controls
     let curve_points: usize = 300;
     let sampling_rate: f64 = 0.003;
@@ -40,7 +72,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     max_value_y += max_y_10_percent;
 
 
-    let root_area = BitMapBackend::new("simple_curve.png", (640, 480)).into_drawing_area();
+    let root_area = BitMapBackend::new("raw_signal.png", (640, 480)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
         .caption("Time Domain Signal", ("Arial", 24).into_font())
@@ -74,7 +106,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     .map(|c| (c.norm() * 2.0) / curve_points as f64)
     .collect();
 
-    let root_area = BitMapBackend::new("fft_plot.png", (640, 480)).into_drawing_area();
+    let root_area = BitMapBackend::new("amplitude_spectrum.png", (640, 480)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
         .caption("Amplitude Spectrum of Signal (FFT)", ("Arial", 24).into_font())
