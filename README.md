@@ -31,6 +31,8 @@ This project aims to create a dynamic fast fourier transform tool which can plot
 
 #### Pre-release v1:
 
+![Raw Signal](https://github.com/Feromond/fft_rust/blob/main/raw_signal.png?raw=true)
+
 - Created a base simple version of the program with static initial inputs to test and validate the program functions. 
 - Plotting functionality is able to dynamically adjust plot x and y dimensions based on the input data, sampling rates, and number of points.
 
