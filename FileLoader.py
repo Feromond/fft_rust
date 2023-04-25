@@ -23,7 +23,7 @@ if butn:
 
     st.image("raw_signal.png")
     st.divider()
-    st.image("fft_plot.png")
+    st.image("amplitude_spectrum.png")
 
 
 
