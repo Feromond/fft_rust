@@ -1,4 +1,4 @@
-# fft_rust
+# FFT_Rust
 ## Hobby Project By: *Jacob Mish*
 
 <!-- TABLE OF CONTENTS -->
