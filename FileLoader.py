@@ -39,7 +39,7 @@ st.divider()
 
 if 'butn' in locals() and butn:
     st.write(f"./{uploaded_file_path}")
-    subprocess.call(["./target/release/fft_rust.exe", f"./{uploaded_file_path}"])
+    subprocess.call(["./target/release/fft_rust", f"./{uploaded_file_path}"])
     col1, col2 = st.columns([1,1])
     col1.image("output_figures/raw_signal.png")
     col2.image("output_figures/amplitude_spectrum.png")
