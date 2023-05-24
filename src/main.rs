@@ -5,14 +5,17 @@ use num_complex::Complex;
 use rustfft::num_traits::Zero;
 use std::fs::File;
 use std::io::{BufReader, BufRead};
+use std::env;
 // use csv::ReaderBuilder;
 fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
+    let mut args = env::args();
+    let default_path = "sample_data.txt";
+    let path = args.nth(1).unwrap_or_else(|| default_path.to_string());
     let mut data = Vec::new();
-    if let Ok(file) = File::open("sample_data.txt") {
+    if let Ok(file) = File::open(path) {
         let reader = BufReader::new(file);
-        
 
         for line in reader.lines() {
             if let Ok(line) = line {
@@ -38,17 +41,6 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let curve_points: usize = data_x.len();
     let sampling_rate: f64 = data_x[1] - data_x[0];
 
-    // let frequency1: f64 = 60.0;
-    // let frequency2: f64 = 100.0;
-
-
-    // let x_values: Vec<f64> = (0..curve_points)
-    //     .map(|i| i as f64 * sampling_rate)
-    //     .collect();
-    // let y_values: Vec<f64> = x_values
-    //     .iter()
-    //     .map(|&x| ((2.0 * PI * frequency1 * x).sin() + (2.0 * PI * frequency2 * x).sin()))
-    //     .collect();
 
     let x_values:Vec<f64> = data_x;
     let y_values:Vec<f64> = data_y;
@@ -73,7 +65,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     max_value_y += max_y_10_percent;
 
 
-    let root_area = BitMapBackend::new("raw_signal.png", (640, 480)).into_drawing_area();
+    let root_area = BitMapBackend::new("raw_signal.png", (1280, 720)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
         .caption("Time Domain Signal", ("Arial", 24).into_font())
@@ -116,7 +108,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let max_mag_y_10_percent: f64 = 0.1 * max_mag_y;
     max_mag_y += max_mag_y_10_percent;
 
-    let root_area = BitMapBackend::new("amplitude_spectrum.png", (640, 480)).into_drawing_area();
+    let root_area = BitMapBackend::new("amplitude_spectrum.png", (1280, 720)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
         .caption("Amplitude Spectrum of Signal (FFT)", ("Arial", 24).into_font())
