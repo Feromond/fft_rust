@@ -11,7 +11,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 
     let mut args = env::args();
-    let default_path = "sample_data.txt";
+    let default_path = "sample_datasets/sample_data.txt";
     let path = args.nth(1).unwrap_or_else(|| default_path.to_string());
     let mut data = Vec::new();
     if let Ok(file) = File::open(path) {
@@ -65,7 +65,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     max_value_y += max_y_10_percent;
 
 
-    let root_area = BitMapBackend::new("raw_signal.png", (1280, 720)).into_drawing_area();
+    let root_area = BitMapBackend::new("output_figures/raw_signal.png", (1280, 720)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
         .caption("Time Domain Signal", ("Arial", 24).into_font())
@@ -108,7 +108,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let max_mag_y_10_percent: f64 = 0.1 * max_mag_y;
     max_mag_y += max_mag_y_10_percent;
 
-    let root_area = BitMapBackend::new("amplitude_spectrum.png", (1280, 720)).into_drawing_area();
+    let root_area = BitMapBackend::new("output_figures/amplitude_spectrum.png", (1280, 720)).into_drawing_area();
     root_area.fill(&WHITE)?;
     let mut chart = ChartBuilder::on(&root_area)
         .caption("Amplitude Spectrum of Signal (FFT)", ("Arial", 24).into_font())
