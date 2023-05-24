@@ -53,6 +53,22 @@ This project aims to create a dynamic fast fourier transform tool which can plot
 - Future implementations will start to work with the users inputs and will also handle more filetypes better.
 - Theoretical future implementation will be to work on handling errors and exceptions better, as well as overall code optimization and redundancy reduction.
 
+#### Alpha-release v1:
+
+- Utilized python streamlit for the front-end of the application to allow for file uploading and displaying of the results
+- Currently do not have much error handling for invalid data structures within files.
+- Columns must still be in specific order for the data to plot correctly, hopefully in a future version I will add a way to self identify which column is most likely to be the "time" and which is the measured amplitudes.
+- Added argument handling so when running the binary, a specific file can be referenced and it will process it. Still defaults to "sample_dataset/sample_data.txt" if there is no argument provided. Will not run without that file in the correct directory.
+
+**Run the Streamlit Front-End Version**: Clone this repo locally and then ensure you have a python version with streamlit installed. Then within the project directory write 
+```
+streamlit run FileLoader.py
+```
+
+If there is some error occuring, a temporary solution could be to recompile the rust binary release locally. This can be done within the project directory using
+```
+cargo build --release
+```
 
 ### References
 
