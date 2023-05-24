@@ -5,7 +5,6 @@ target/release/deps
 target/release/examples
 target/release/incremental
 target/release/.cargo-lock
-target/release/fft_rust.d
 target/release/fft_rust.pdb
 !target/release/
 
