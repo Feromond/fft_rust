@@ -33,8 +33,8 @@ This project aims to create a dynamic fast fourier transform tool which can plot
 
 
 <p align="center">
-  <img width="320" height="240" src="https://github.com/Feromond/fft_rust/blob/master/raw_signal.png?raw=true">
-  <img width="320" height="240" src="https://github.com/Feromond/fft_rust/blob/master/amplitude_spectrum.png?raw=true">
+  <img width="420" height="340" src="https://github.com/Feromond/fft_rust/blob/master/output_figures/raw_signal.png?raw=true">
+  <img width="420" height="340" src="https://github.com/Feromond/fft_rust/blob/master/output_figures/amplitude_spectrum.png?raw=true">
   
 </p>
 
