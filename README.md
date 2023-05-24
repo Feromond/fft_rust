@@ -12,6 +12,8 @@
       <a href="#release-notes">Release Notes</a>
       <ul>
         <li><a href="#pre-release-v1">Pre-v1</a></li>
+        <li><a href="#pre-release-v2">Pre-v2</a></li>
+        <li><a href="#alpha-release-v1">Alpha_v1</a></li>
       </ul>
     </li>
     <li>
