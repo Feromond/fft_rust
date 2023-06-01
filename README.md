@@ -2,7 +2,7 @@
 ## Hobby Project By: *Jacob Mish*
 
 <!-- TABLE OF CONTENTS -->
-<details>
+
   <summary>Table of Contents</summary>
   <ol>
     <li>
@@ -22,7 +22,7 @@
     
     
   </ol>
-</details>
+
 
 ## About The Project
 
