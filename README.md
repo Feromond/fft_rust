@@ -1,5 +1,6 @@
 # FFT_Rust
-## Hobby Project By: *Jacob Mish*
+
+## Hobby Project By: _Jacob Mish_
 
 <!-- TABLE OF CONTENTS -->
 
@@ -28,11 +29,16 @@
 
 This project aims to create a dynamic fast fourier transform tool which can plot any raw signal and the associated amplitude spectrum after FFT.
 
+To install all required python packages run:
+
+`python -m pip install -r requirements.txt`
+
+Then to run the front end GUI version with this python setup, run:
+`streamlit run FileLoader.py`
 
 ## Release Notes:
 
 #### Pre-release v1:
-
 
 <p align="center">
   <img width="320" height="240" src="https://github.com/Feromond/fft_rust/blob/master/output_figures/raw_signal.png?raw=true">
@@ -40,8 +46,7 @@ This project aims to create a dynamic fast fourier transform tool which can plot
   
 </p>
 
-
-- Created a base simple version of the program with static initial inputs to test and validate the program functions. 
+- Created a base simple version of the program with static initial inputs to test and validate the program functions.
 - Plotting functionality is able to dynamically adjust plot x and y dimensions based on the input data, sampling rates, and number of points.
 
 - Future implementation will begin to add forms of user input or potential implement basic file reading to process more interesting data.
@@ -62,12 +67,14 @@ This project aims to create a dynamic fast fourier transform tool which can plot
 - Columns must still be in specific order for the data to plot correctly, hopefully in a future version I will add a way to self identify which column is most likely to be the "time" and which is the measured amplitudes.
 - Added argument handling so when running the binary, a specific file can be referenced and it will process it. Still defaults to "sample_dataset/sample_data.txt" if there is no argument provided. Will not run without that file in the correct directory.
 
-**Run the Streamlit Front-End Version**: Clone this repo locally and then ensure you have a python version with streamlit installed. Then within the project directory write 
+**Run the Streamlit Front-End Version**: Clone this repo locally and then ensure you have a python version with streamlit installed. Then within the project directory write
+
 ```
 streamlit run FileLoader.py
 ```
 
 If there is some error occuring, a temporary solution could be to recompile the rust binary release locally. This can be done within the project directory using
+
 ```
 cargo build --release
 ```
@@ -75,4 +82,3 @@ cargo build --release
 ### References
 
 [Rustfft](https://docs.rs/rustfft/latest/rustfft/)
-
